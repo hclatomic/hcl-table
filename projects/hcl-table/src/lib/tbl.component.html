@@ -1,0 +1,358 @@
+
+
+<ng-container *ngIf="def">
+
+<div *ngIf="!(store.def.serverData && store.def.serverData.virtualScroll) && paginatorPosition[0] === 'top' && totalPages > 1"
+        style="display: flex;"
+        [ngStyle]="{'justify-content': paginatorPosition[1]}">
+    <hcl-paginator [totalPages]="totalPages" [currentPage]="currentPage" (output)="changePage($event)"></hcl-paginator>
+</div>
+
+<div style="position:relative;margin:0;padding:0;overflow:hidden">
+<div *ngIf="serverMessage" class="hcl-table-message" [ngClass]="{'error': !transactionSuccess}">
+    {{serverMessage}}
+    <span class="hcl-table-close-message" (click)="serverMessage=''">X</span>
+</div>
+<div class="hcl-table-container" [ngStyle]="{'max-height': def.height ?  def.height + 'px' : ''}" (scroll)="onScroll($event)">
+
+    <table #table
+        [attr.class]="store.def.css ? store.def.css + ' hcl-table-noselect' : 'hcl-table-noselect'"
+        [ngClass]="[store.def.css && store.def.css.table ? store.def.css.table : 'hcl-table']"
+    >
+        <ng-container *ngIf="store.def.cols.length">
+            <thead class="hcl-table-sticky">
+                <ng-container *ngIf="store.def.groupHeaders">
+                    <ng-container *ngFor="let row of store.def.groupHeaders">
+                            <tr>
+                                <ng-container *ngFor="let col of row">
+                                    <th
+                                        [attr.colspan]="col.colspan"
+                                        [ngClass]="col.css && col.css.th ? col.css.th : 'hcl-table-th'"
+                                    >
+                                        {{col.label}}
+                                    </th>
+                                </ng-container>
+                            </tr>
+                    </ng-container>
+                </ng-container>
+                <tr>
+                    <ng-container *ngFor="let col of store.def.cols; let c = index">
+                        <th
+                            [ngClass]="[
+                                col.css && col.css.th ? col.css.th :
+                                store.def.css && store.def.css.th ? store.def.css.th : 'hcl-table-th'
+                            ]"
+                            [ngStyle]="{
+                                'vertical-align': col.openCloseAll ? 'middle' : col.valign && col.valign.th ? col.valign.th : 'top',
+                                'text-align': col.halign && col.halign.th ? col.halign.th : 'left',
+                                'cursor': col.type === 'subrow' && col.openCloseAll ? 'pointer' : '',
+                            }"
+                            (click)="col.type === 'subrow' && col.openCloseAll ? toggleOpenCloseAll() : ''"
+                        >
+                        <ng-container *ngIf="col.type === 'subrow' && col.openCloseAll">
+                                <div
+                                    [ngClass]="{
+                                        'hcl-table-chevron-up selected': allSubrowsOpen,
+                                        'hcl-table-chevron-down': !allSubrowsOpen,
+                                    }"
+
+                                ></div>
+                        </ng-container>
+                        <ng-container *ngIf="col.type !== 'subrow'">
+
+                            <table style="width:100%;margin:0;padding:0;">
+                                <tr>
+                                    <td style="vertical-align:top;"
+                                        [ngStyle]="{'text-align': col.halign && col.halign.th ? col.halign.th : 'left'}"
+                                    >{{col.headerLabel}}</td>
+                                    <td *ngIf="col.sortable" style="vertical-align:top;width:10%" rowspan="2">
+                                        <div
+                                            (click)="toggleSort(c,'up')"
+                                            style="cursor: pointer;"
+                                            [attr.class]="store.def.css && store.def.css.chevronUp ? store.def.css.chevronUp : 'hcl-table-chevron-up'"
+                                            [ngClass]="col.ctx.sortOrder === 'up' ? 'selected' : ''"
+                                        ></div>
+                                        <div style="height:0.2em"></div>
+                                        <div
+                                            (click)="toggleSort(c, 'down')"
+                                            style="cursor: pointer"
+                                            [attr.class]="store.def.css && store.def.css.chevronDown ? store.def.css.chevronDown : 'hcl-table-chevron-down'"
+                                            [ngClass]="col.ctx.sortOrder === 'down' ? 'selected' : ''"
+                                        ></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf="col.searchable" colspan="2">
+                                        <input
+                                            [attr.class]="store.def.css && store.def.css.inputSearch ? store.def.css.inputSearch : 'hcl-table-input-search'"
+                                            [ngClass]="{'active': col.ctx.searchString}"
+                                            type="text"
+                                            [(ngModel)]="col.ctx.searchString"
+                                            (keyup)="goSearch(col)"
+                                        />
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </ng-container>
+
+                        </th>
+                    </ng-container>
+                </tr>
+            </thead>
+        </ng-container>
+        <ng-container *ngIf="store.rowsToDisplay.length">
+            <tbody #tbody>
+                <ng-container *ngFor="let row of store.rowsToDisplay; let r = index">
+                    <tr style="height: 1px"
+                        [ngClass]=" store.def.stripped && r%2 ? store.def.css && store.def.css.stripped ? store.def.css.stripped : 'hcl-table-tr-stripped' : ''"
+                    >
+                        <ng-container *ngFor="let col of store.def.cols; let c = index">
+                            <td [ngStyle]="{
+                                    'text-align': col.halign && col.halign.td ? col.halign.td : col.type === 'number' ? 'right' : 'left',
+                                    'vertical-align': col.valign ? col.valign : 'middle',
+                                    'cursor': col.editable ? 'copy' : col.clickable || col.type === 'subrow' ? 'pointer' :  'default',
+                                    'position': 'relative',
+                                    'height': 'inherit'
+                                }"
+                                [attr.class]="row[col.dataProp] && row[col.dataProp].css || ''"
+                                (click)="cellClicked(r, c)"
+                                (dblclick)="editCell(r, c)"
+                                [ngClass]="[
+                                    col.type === 'subrow' ?
+                                    (store.def.css && store.def.css.tdOpenClose ? store.def.css.tdOpenClose : 'hcl-table-open-close-cell') :
+                                    (col.css && col.css.td  ? col.css.td : store.def.css && store.def.css.td ? store.def.css.td : 'hcl-table-td'),
+                                    col.type === 'live' ? 'hcl-table-live-td' : '',
+                                    col.type !== 'subrow' &&
+                                    store.def.mouseHighlight && selection.rowMouseOver === r ?
+                                    store.def.css && store.def.css.mouseHighlight && store.def.css.mouseHighlight.row ? store.def.css.mouseHighlight.row : 'hcl-table-td-row-highlighted' : '',
+                                    col.type !== 'subrow' &&
+                                    store.def.mouseHighlight && selection.colMouseOver === c ?
+                                    store.def.css && store.def.css.mouseHighlight && store.def.css.mouseHighlight.col ? store.def.css.mouseHighlight.col : 'hcl-table-td-col-highlighted' : '',
+                                    (store.def.mouseHighlight && selection.rowMouseOver === r) && (store.def.mouseHighlight && selection.colMouseOver === c) ?
+                                    store.def.css && store.def.css.mouseHighlight && store.def.css.mouseHighlight.cell ? store.def.css.mouseHighlight.cell : 'hcl-table-td-highlighted' : '',
+                                    store.def.selectable && col.type !== 'subrow' &&
+                                    selection.zone.rowA <= r && selection.zone.rowB >= r &&
+                                    selection.zone.colA <= c && selection.zone.colB >= c  ?
+                                    store.def.css && store.def.css.cellSelected ? store.def.css.cellSelected : 'hcl-table-td-selected' : ''
+
+                                ]"
+                                (mouseover)="selection.pointCell(r,c)"
+								(mousedown)="selection.start(r,c)"
+								(mousemove)="selection.move(r,c)"
+								(mouseup)="selection.end(r,c)"
+                            >
+
+                                <ng-container [ngSwitch]="col.type">
+
+                                    <ng-container *ngSwitchCase="'image'">
+                                        <img [attr.src]="(row[col.dataProp] && row[col.dataProp].value) || row[col.dataProp]" />
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'number'">
+                                        {{row[col.dataProp] && row[col.dataProp].value || row[col.dataProp] || 0}}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'live'">
+                                        <live-update-cell
+                                            [val]="row[col.dataProp] && row[col.dataProp].value ?  row[col.dataProp].value : row[col.dataProp]"
+                                            [liveProp]="col.dataProp"
+                                            [refProp]="store.def.liveUpdateReference"
+                                            [ref]="row[store.def.liveUpdateReference]"
+                                            [options]="col.liveUpdateOptions"
+                                      ></live-update-cell>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'subrow'">
+                                        <div style="cursor: pointer">
+                                            <div
+                                                [ngClass]="[
+                                                    row.ctx.open ? store.def.css && store.def.css.chevronUp ? store.def.css.chevronUp + ' selected' : 'hcl-table-chevron-up selected' : '',
+                                                    !row.ctx.open ? store.def.css && store.def.css.chevronDown ? store.def.css.chevronDown : 'hcl-table-chevron-down' : ''
+                                                ]"
+
+                                            ></div>
+                                        </div>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchDefault>
+
+                                        {{row[col.dataProp] && row[col.dataProp].value || row[col.dataProp]}}
+                                    </ng-container>
+
+                                </ng-container>
+
+
+                                <ng-container *ngIf="col.editable && row.ctx.editing.includes(c)">
+                                    <div [ngClass]="[store.def.css && store.def.css.editing && store.def.css.editing.popup ?
+                                        store.def.css.editing.popup : 'hcl-table-edit-popup',
+                                        c > store.def.cols.length/2 ? 'right' : '']">
+                                        <div [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.currentValue ?
+                                            store.def.css.edit.currentValue : 'hcl-table-edit-current-value'">
+
+                                            <ng-container *ngIf="col.filter">
+                                                {{store.rowsToDisplay[r].ctx.filtered[col.dataProp]}}
+                                            </ng-container>
+                                            <ng-container *ngIf="!col.filter">
+                                                {{row[col.dataProp]}}
+                                            </ng-container>
+
+                                        </div>
+                                        <div>
+
+                                            <ng-container [ngSwitch]="col.editable.type">
+                                                <ng-container *ngSwitchCase="'input-number'">
+                                                    <ng-container *ngIf="col.filter">
+                                                        <input type="number" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.inputNumber ?
+                                                        store.def.css.edit.inputText : 'hcl-table-edit-input-number'"
+                                                        [(ngModel)]="store.rowsToDisplay[r].ctx.filtered[col.dataProp]">
+                                                        </ng-container>
+                                                    <ng-container *ngIf="!col.filter">
+                                                        <input type="number" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.inputNumber ?
+                                                        store.def.css.edit.inputText : 'hcl-table-edit-input-number'"
+                                                        [(ngModel)]="row[col.dataProp]">
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="'textarea'">
+                                                    <ng-container *ngIf="col.filter">
+                                                        <textarea [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                            [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.textarea ?
+                                                            store.def.css.edit.textarea : 'hcl-table-edit-textarea'"
+                                                            [(ngModel)]="row[col.dataProp] && row[col.dataProp].value">
+                                                        </textarea>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!col.filter">
+                                                        <textarea [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                            [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.textarea ?
+                                                            store.def.css.edit.textarea : 'hcl-table-edit-textarea'"
+                                                            [(ngModel)]="row[col.dataProp]">
+                                                        </textarea>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="'checkbox'">
+                                                    <ng-container *ngIf="col.filter">
+                                                        <input type="checkbox" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.checkbox ?
+                                                        store.def.css.edit.checkbox : 'hcl-table-edit-checkbox'"
+                                                        [(ngModel)]="store.rowsToDisplay[r].ctx.filtered[col.dataProp]">
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!col.filter">
+                                                        <input type="checkbox" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.checkbox ?
+                                                        store.def.css.edit.checkbox : 'hcl-table-edit-checkbox'"
+                                                        [(ngModel)]="store.data[row.ctx.row][col.dataProp]">
+                                                    </ng-container>
+                                                </ng-container>
+
+                                                <ng-container *ngSwitchCase="'select'">
+                                                    <ng-container *ngIf="col.filter">
+                                                        <select [(ngModel)]="store.rowsToDisplay[r].ctx.filtered[col.dataProp]"
+                                                            [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.select ?
+                                                            store.def.css.edit.select : 'hcl-table-edit-select'"
+                                                        >
+                                                            <option *ngFor="let item of col.editable.list" [value]="item">
+                                                                {{item}}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!col.filter">
+                                                        <select [(ngModel)]="row[col.dataProp]"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.select ?
+                                                        store.def.css.edit.select : 'hcl-table-edit-select'"
+                                                    >
+                                                            <option *ngFor="let item of col.editable.list" [value]="item">
+                                                                {{item}}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="'date'">
+                                                    <ng-container *ngIf="col.filter">
+                                                        <input type="date" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.inputDate ?
+                                                        store.def.css.edit.inputDate : 'hcl-table-edit-input-date'"
+                                                        [(ngModel)]="store.rowsToDisplay[r].ctx.filtered[col.dataProp]">
+                                                        </ng-container>
+                                                    <ng-container *ngIf="!col.filter">
+                                                        <input type="date" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.inputDate ?
+                                                        store.def.css.edit.inputDate : 'hcl-table-edit-input-date'"
+                                                        [(ngModel)]="row.ctx.jsDate">
+                                                    </ng-container>
+                                                </ng-container>
+
+                                                <ng-container *ngSwitchDefault>
+                                                    <ng-container *ngIf="col.filter">
+                                                        <input type="text" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.inputText ?
+                                                        store.def.css.edit.inputText : 'hcl-table-edit-input-text'"
+                                                        [(ngModel)]="store.rowsToDisplay[r].ctx.filtered[col.dataProp]">
+                                                        </ng-container>
+                                                    <ng-container *ngIf="!col.filter">
+                                                        <input type="text" [attr.disabled]="row.ctx.toConfirm.includes(c)"
+                                                        [attr.class]="store.def.css && store.def.css.edit && store.def.css.edit.inputText ?
+                                                        store.def.css.edit.inputText : 'hcl-table-edit-input-text'"
+                                                        [(ngModel)]="row[col.dataProp]">
+                                                    </ng-container>
+                                                </ng-container>
+                                            </ng-container>
+
+
+                                        </div>
+                                        <div class="hcl-table-edit-current-value">
+                                            <button [attr.class]="store.def.css && store.def.css.editing && store.def.css.editing.cancelButton ?
+                                                store.def.css.editing.cancelButton : 'hcl-table-cancel-edit'"
+                                                (click)="cancelEdit(r, c)">Cancel</button>
+                                            <ng-container *ngIf="!row.ctx.toConfirm.includes(c)">
+                                                <button  [attr.class]="store.def.css && store.def.css.editing && store.def.css.editing.validateButton ?
+                                                store.def.css.editing.validateButton : 'hcl-table-validate-edit'"
+                                                (click)="validateEdit(r, c)">validate</button>
+                                            </ng-container>
+                                            <ng-container *ngIf="row.ctx.toConfirm.includes(c)">
+                                                <button  [attr.class]="store.def.css && store.def.css.editing && store.def.css.editing.confirmButton ?
+                                                store.def.css.editing.confirmButton : 'hcl-table-confirm-edit'"
+                                                (click)="validateEdit(r, c)">Please confirm</button>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+
+                            </td>
+                        </ng-container>
+                    </tr>
+                    <tr *ngIf="row.ctx.open">
+                            <ng-container *ngFor="let col of store.def.cols">
+                                <ng-container *ngIf="col.type === 'subrow'">
+                        <td
+                            [attr.colspan]="store.def.cols.length"
+                            [ngClass]="[store.def.css && store.def.css.tdSubrowContent ? store.def.css.tdSubrowContent :
+                                store.def.css && store.def.css.td ? store.def.css.td : 'hcl-table-td-subrow-content']"
+                            [ngStyle]="{
+                                'text-align': col.halign && col.halign.td ? col.halign.td : col.type === 'number' ? 'right' : 'left',
+                                'vertical-align': col.valign && col.valign.td ? col.valign.td : 'top'
+                            }"
+                        >
+                                    <hcl-table
+                                        [def]="col.def"
+                                        [data]="row[col.dataProp]"
+                                        (output)="outputFromTable($event)"
+                                    ></hcl-table>
+
+                        </td>
+                                </ng-container>
+                            </ng-container>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </ng-container>
+    </table>
+
+</div>
+<div *ngIf="!(store.def.serverData && store.def.serverData.virtualScroll) && paginatorPosition[0] === 'bottom' && totalPages > 1"
+    style="display: flex;"
+    [ngStyle]="{'justify-content': paginatorPosition[1]}"
+>
+    <hcl-paginator [totalPages]="totalPages" [currentPage]="currentPage" (output)="changePage($event)"></hcl-paginator>
+</div>
+</div>
+</ng-container>

@@ -1,0 +1,315 @@
+$medium-color: #888;
+$light-color: #ddd;
+$dark-color: #666;
+$very-light-color: #fff;
+
+
+.hcl-table-container {
+    position: relative;
+    border: 0;
+    overflow: auto;
+    display: inline-block;
+    width:100%;
+}
+
+.hcl-table-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.hcl-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-right: 1px solid $medium-color;
+    border-bottom: 1px solid $medium-color;
+    font-family: arial;
+    font-size: 0.9em;
+}
+
+.hcl-table-tr-stripped {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.hcl-table-th {
+    background: linear-gradient(0, #bbb 0%, #ccc 50%,  #ddd 100%);
+    color: #555;
+    border-left: 1px solid $medium-color;
+    border-top: 1px solid $medium-color;
+    vertical-align: top;
+    padding: 0.5em;
+    text-shadow: 1px 1px #fff;
+}
+.hcl-table-td {
+    color: $dark-color;
+    border-left: 1px solid $medium-color;
+    border-top: 1px solid $medium-color;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}
+.hcl-table-td-subrow-content {
+    color: $dark-color;
+    border-left: 1px solid $medium-color;
+    border-top: 1px solid $medium-color;
+    padding: 0;
+}
+
+.hcl-table-td-row-highlighted {
+    box-shadow: 0px 2px 0px 0px inset #888, 0px -2px 0px 0px inset #888;
+}
+.hcl-table-td-col-highlighted {
+    box-shadow: 2px 0px 0px 0px inset #888, -2px 0px 0px 0px inset #888;
+}
+.hcl-table-td-highlighted {
+    box-shadow: 2px 2px 0px 0px inset #888, -2px -2px 0px 0px inset #888;
+
+}
+.hcl-table-td-selected {
+    background: rgba(0,200,0,0.2);
+}
+
+
+.hcl-table-noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
+
+.hcl-table-open-close-cell {
+    background: linear-gradient(0, #bbb 0%, #ccc 50%,  #ddd 100%);
+    border-top: 1px solid #888;
+    border-left: 1px solid #888;
+}
+
+.hcl-table-chevron-down {
+    background-color: $medium-color;
+    clip-path: polygon(50% 100%, 0 0, 100% 0, 50% 100%);
+    width: 1em;
+    height: 0.5em;
+    margin: auto;
+}
+.hcl-table-chevron-up {
+    background-color: $medium-color;
+    clip-path: polygon(50% 0, 100% 100%, 0% 100%, 50% 0);
+    width: 1em;
+    height: 0.5em;
+    margin: auto;
+}
+
+.hcl-table-chevron-up.selected {
+    background-color: $very-light-color;
+}
+.hcl-table-chevron-down.selected {
+    background-color: $very-light-color;
+}
+
+.hcl-table-input-search {
+    border: 0px solid #006;
+    background: $light-color;
+    border-radius: 3px;
+    padding: 0.25em;
+    width: calc(100% - 0.5em);
+}
+.hcl-table-input-search:focus, .active {
+    background: $light-color;
+    outline: none;
+}
+
+.hcl-table-edit-popup {
+    //word-break: break-word;
+    position: absolute;
+    text-align: center;
+    top: 10px;
+    left: 10px;
+    width: calc(100% + 2em);
+    min-width: 200px;
+    padding: 0;
+    background-color: #ffa;
+    z-index: 1000;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+    border-radius: 3px;
+    border: 1px solid #060
+}
+.hcl-table-edit-popup.right {
+    left: unset;
+    right: 10px;
+}
+.hcl-table-cancel-edit {
+    background-color: #060;
+    color: #fff;
+    border: 0;
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.hcl-table-validate-edit {
+    background-color: #c00;
+    color: #fff;
+    border: 0;
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.hcl-table-confirm-edit {
+    background-color: #808;
+    color: #fff;
+    border: 0;
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.hcl-table-edit-current-value {
+    margin-top: 0.25em;
+    padding: 0.25em;
+    font-weight: bold;
+    color: #444;
+}
+.hcl-table-edit-input-text{
+    padding: 0.25em;
+}
+.hcl-table-edit-input-number{
+    text-align: right;
+}
+.hcl-table-edit-textarea {
+    width: calc(100% - 10px);;
+    min-height: 100px;
+}
+.hcl-table-edit-checkbox {
+    width: 2em;
+    font-size: 2em;
+}
+.hcl-table-edit-select {
+    min-width: 4em;
+    height: 2em;
+    border: 1px solid #999;
+    color: #333;
+    background-color: #eee;
+    border-radius: 5px;
+}
+
+@keyframes appears {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.hcl-table-message {
+    font-family: arial;
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    z-index: 2000;
+    min-width: 200px;
+    border: 1px solid #060;
+    border-radius: 10px;
+    box-shadow: 2px 2px 3px rgba(0, 0,0, 0.5);
+    background: #aff8c1;
+    padding: 0.5em;
+    color: #060;
+    animation-name: appears;
+    animation-duration: 300ms;
+}
+
+.hcl-table-message.error {
+    border: 1px solid #c00;
+    border-radius: 10px;
+    background: #f8afaf;
+    color: #c00;
+}
+.hcl-table-close-message {
+    float: right;
+    margin-left: 2em;
+    cursor: pointer;
+}
+
+.anim {
+    transition-property: opacity;
+    //transition-timing-function: ease-in-out;
+    transition-duration: 2s;
+}
+
+.both {
+     //font-size: 600%;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+
+}
+.old-value {
+    color: #ccc;
+}
+
+.new-value{
+    animation-name: head;
+    //animation-delay: 1s;
+}
+
+@keyframes reda {
+    0% {opacity:0;}
+    50% {opacity:1;}
+    100% {opacity:0;}
+}
+@keyframes greena {
+    0% {opacity:0;}
+    50% {opacity:1; }
+    100% {opacity:0;}
+}
+
+.red {
+    font-size: 2em;
+    color: #800;
+    opacity: 1;
+}
+.red:after {
+    background: #fcc;
+    animation-name: reda;
+    animation-duration: 2s;
+    animation-iteration-count: initial;
+    content: '\2191';
+    opacity: 0;
+}
+.green {
+    font-size: 2em;
+    color: #060;
+    opacity: 1;
+}
+.green:after {
+    content: '\2193';
+    background: #cfc;
+    animation-name: greena;
+    animation-duration: 2s;
+    animation-iteration-count: initial;
+    opacity: 0;
+}
+
+
+.hcl-table-live-td {
+    border-top: 1px solid #666;
+    //border-left: 1px solid #666;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,67 @@
+$medium-color: #aaa;
+$light-color: #eee;
+$very-light-color: #fff;
+$dark-color: #666;
+
+.hcl-paginator-span {
+    padding: 0.25em;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 2em;
+    text-align: center;
+    font-family: arial;
+    font-size: 0.9em;
+    color: #666;
+}
+.hcl-paginator-span.bigger {
+    width: 3em;
+}
+.hcl-paginator-span.selected {
+    border-color: $dark-color;
+    background: $medium-color;
+    color: $light-color;
+
+}
+
+.hcl-paginator-down {
+    background-color: $medium-color;
+    clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 50%);
+    width: 0.5em;
+    height: 1em;
+    margin: 0.15em;
+}
+.hcl-paginator-up {
+    background-color: $medium-color;
+    clip-path: polygon(0 0, 100% 50%, 0 100%, 0 0);
+    width: 0.5em;
+    height: 1em;
+    margin: 0.15em;
+}
+.hcl-paginator-down.inactive {
+    background-color: $light-color;
+}
+.hcl-paginator-up.inactive {
+    background-color: $light-color;
+}
+
+.hcl-paginator-input {
+    border: 0px solid #006;
+    background: $light-color;
+    color: $dark-color;
+    border-radius: 3px;
+    padding: 0.25em;
+    width: calc( 2.5em + 3px);
+
+}
+
+.hcl-paginator-input:focus {
+    background: $medium-color;
+    outline: none;
+    color: $very-light-color
+}
+
+input.hcl-paginator-input::-webkit-outer-spin-button,
+input.hcl-paginator-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

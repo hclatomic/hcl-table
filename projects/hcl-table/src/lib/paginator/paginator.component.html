@@ -1,0 +1,30 @@
+
+<table style="border-collapse: collapse;">
+    <tr>
+        <ng-container *ngFor="let page of arrayDisplay">
+            <td
+                (click)="changePage(page)"
+                style="cursor: pointer"
+
+            >
+                <div
+                    class="hcl-paginator-span"
+                    [ngClass]="{
+                        'hcl-paginator-down': page === 'down',
+                        'hcl-paginator-up': page === 'up',
+                        'inactive': (page === 'down' && currentPage === 1) || (page === 'up' && currentPage === totalPages),
+                        'selected': page === currentPage
+                    }"
+                >
+                    {{page !== 'down' && page !== 'up' ? page : ''}}
+                </div>
+
+            </td>
+        </ng-container>
+        <td>
+            <div class="hcl-paginator-span bigger" style="padding:0">
+                <input class="hcl-paginator-input" type="number" [(ngModel)]="inputPage" (change)="changePage(inputPage || 1)">
+            </div>
+        </td>
+    </tr>
+</table>

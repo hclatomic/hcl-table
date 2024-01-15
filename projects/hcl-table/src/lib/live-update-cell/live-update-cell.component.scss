@@ -1,0 +1,31 @@
+.hcl-table-new-value {
+    width: calc(100% - 0.5em);
+    color: black;
+    text-align: right;
+    font-family: arial;
+}
+.hcl-table-old-value {
+    padding-right: 1em;
+    font-size: 0.7em;
+    text-align: right;
+    color: #666;
+}
+.hcl-table-delta-down {
+    padding-right: 1em;
+    font-size: 0.7em;
+    text-align: right;
+    color: #c00;
+}
+.hcl-table-delta-up {
+    padding-right: 1em;
+    font-size: 0.7em;
+    text-align: right;
+    color: #080;
+}
+.hcl-table-delta-equal {
+    padding-right: 1em;
+    font-size: 0.7em;
+    text-align: right;
+    color: #666;
+}
+

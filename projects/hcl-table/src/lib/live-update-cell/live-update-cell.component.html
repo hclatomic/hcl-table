@@ -1,0 +1,42 @@
+<div
+    [ngStyle]="{
+        width: '100%',
+        height: '100%',
+        'background-color':
+            diff > 0 ? (options && options.flashBackground && options.flashBackground.up ? options.flashBackground.up : '#fcc') :
+                diff < 0 ? (options && options.flashBackground && options.flashBackground.down ? options.flashBackground.down : '#cfc') :
+                    diff === 0 ? (options && options.flashBackground && options.flashBackground.equal ? options.flashBackground.equal : 'transparent') :
+            'transparent'}"
+>
+    <div [attr.class]="options && options.css && options.css.newValue ? options.css.newValue : 'hcl-table-new-value'">
+        {{val}}
+    </div>
+
+    <ng-container *ngIf="options && options.type === 'number' && options.showDelta">
+
+        <div *ngIf="lastMove > 0"
+            [attr.class]="options && options.css && options.css.delta && options.css.delta.up  ? options.css.delta.up : 'hcl-table-delta-up'"
+        >
+            +{{delta}}
+        </div>
+        <div *ngIf="lastMove < 0"
+            [attr.class]="options && options.css && options.css.delta && options.css.delta.down  ? options.css.delta.down : 'hcl-table-delta-down'"
+        >
+            {{delta}}
+        </div>
+        <div *ngIf="lastMove === 0"
+            [attr.class]="options && options.css && options.css.delta && options.css.delta.equal  ? options.css.delta.equal : 'hcl-table-delta-equal'"
+        >
+            0
+        </div>
+
+    </ng-container>
+
+    <div *ngIf="options.showOldValue"
+        [attr.class]="options && options.css && options.css.oldValue ? options.css.oldValue : 'hcl-table-old-value'"
+    >
+        {{oldData}}
+    </div>
+
+
+</div>
