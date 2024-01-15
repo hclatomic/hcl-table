@@ -175,14 +175,18 @@ export class TblComponent implements OnInit, OnChanges {
         this.store.data = JSON.parse(JSON.stringify(this.data));
       }
       else if (ref && this.store.data.length) {
-        //console.log(this.store.data);
         for (const row of this.data) {
           const r = this.store.data.filter((item: any) => item[ref] === row[ref])[0];
-          for (const prop in row) {
-            if (prop === ref || prop === 'ctx') {
-              continue;
+          if (r) {
+            for (const prop in row) {
+              if (prop === ref || prop === 'ctx') {
+                continue;
+              }
+              r[prop] = row[prop];
             }
-            r[prop] = row[prop];
+          }
+          else {
+            this.store.data.push(row);
           }
         }
       }
@@ -197,11 +201,16 @@ export class TblComponent implements OnInit, OnChanges {
       for (const row of this.data) {
         const ref = this.store.def.liveUpdateReference;
         const rd = this.store.rowsToDisplay.filter((r: any) => r[ref] == row[ref])[0];
-        for (const prop in row) {
-          if (prop === ref || prop === 'ctx') {
-            continue;
+        if (rd) {
+          for (const prop in row) {
+            if (prop === ref || prop === 'ctx') {
+              continue;
+            }
+            rd[prop] = row[prop];
           }
-          rd[prop] = row[prop];
+        }
+        else {
+          this.store.rowsToDisplay.push(row);
         }
       }
     }

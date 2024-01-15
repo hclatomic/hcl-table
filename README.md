@@ -1,5 +1,9 @@
 # hcl-table
 
+**A table/grid module for Angular**
+
+**Fast built of rich and functional tables/grids**
+
 [Full documentation and examples](http://www.hclatom.net/hcl-table/example-app)
 
 ## install & get started
@@ -29,7 +33,7 @@ export class ExampleComponent  {
                 headerLabel: 'Col A',
                 dataProp: 'cola'
             },
-            {
+            {***
                 headerLabel: 'Col B',
                 dataProp: 'colb'
             }
@@ -435,6 +439,7 @@ The attribute [data] is used to fillup the table at first. Then this same attrib
 ```
 The updates must then be performed cell by cell, there is no "row update" facility.
 
+Note that if a value comes with a liveUpdateReference which is not already present, a new row is added.
 
 
 
