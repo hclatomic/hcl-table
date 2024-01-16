@@ -442,7 +442,8 @@ The updates must then be performed cell by cell, there is no "row update" facili
 Note that if a value comes with a liveUpdateReference which is not already present, a new row is added.
 
 
-
+# contact
+For any question about bugs, improvements or service, please feel free to contact me : hcl@oceanvirtuel.com
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.5.

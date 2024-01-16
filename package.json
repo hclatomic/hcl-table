@@ -1,6 +1,12 @@
 {
   "name": "hcl-table",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "keywords": [
+    "table",
+    "grid",
+    "angular",
+    "angular module"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
