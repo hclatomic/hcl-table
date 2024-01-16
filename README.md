@@ -5,6 +5,7 @@
 **Fast built of rich and functional tables/grids**
 
 [Full documentation and examples](http://www.hclatom.net/hcl-table/example-app)
+
 [GitHub repository](https://github.com/hclatomic/hcl-table)
 
 ## install & get started
