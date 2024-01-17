@@ -1,6 +1,12 @@
 {
   "name": "hcl-table",
-  "version": "0.0.2",
+  "version": "0.0.7",
+  "keywords": [
+    "table",
+    "grid",
+    "angular",
+    "angular module"
+  ],
   "peerDependencies": {
     "@angular/common": "^15.2.0",
     "@angular/core": "^15.2.0"

@@ -9,9 +9,12 @@
 [GitHub repository](https://github.com/hclatomic/hcl-table)
 
 ## install & get started
+
 install the module to your angular application :
 
 `npm i hcl-table`
+
+The `--force` option must be added to this command for angular versions different from 15.
 
 In the app module (or any concerned module), import the hcl-table module :
 
