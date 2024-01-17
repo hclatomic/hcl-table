@@ -6,10 +6,15 @@
 
 [Full documentation and examples](http://www.hclatom.net/hcl-table/example-app)
 
+[GitHub repository](https://github.com/hclatomic/hcl-table)
+
 ## install & get started
+
 install the module to your angular application :
 
 `npm i hcl-table`
+
+The `--force` option must be added to this command for angular versions different from 15.
 
 In the app module (or any concerned module), import the hcl-table module :
 
@@ -426,7 +431,7 @@ interface LiveUpdateOptions {
     };
 };
 ```
-The attribute [data] is used to fillup the table at first. Then this same attribute is also used to inject the updated data, which must have the following format :
+The attribute [data] can be used optionally to fillup the table at first, as usual, then this same attribute is also used to inject the updated data, which must have the following format :
 ```
 [
     ...
@@ -439,11 +444,12 @@ The attribute [data] is used to fillup the table at first. Then this same attrib
 ```
 The updates must then be performed cell by cell, there is no "row update" facility.
 
-Note that if a value comes with a liveUpdateReference which is not already present, a new row is added.
+Note that if a value comes with a liveUpdateReference which is not already present, a new row is added. Therefore the first completion of the table is optional, it can be filled up by using only the updated
+data format.
 
 
-# contact
-For any question about bugs, improvements or service, please feel free to contact me : hcl@oceanvirtuel.com
+
+
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.5.
