@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TblComponent } from './tbl.component';
 import { PaginatorComponent } from './paginator/paginator.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LiveUpdateCellComponent } from './live-update-cell/live-update-cell.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -16,7 +16,7 @@ import { LiveUpdateCellComponent } from './live-update-cell/live-update-cell.com
   imports: [
     CommonModule,
     FormsModule,
-    BrowserAnimationsModule
+    HttpClientModule
   ],
   exports: [
     TblComponent
