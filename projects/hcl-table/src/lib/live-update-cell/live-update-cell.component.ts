@@ -8,13 +8,23 @@ import { trigger, state, style, animate, transition, query, group } from '@angul
   templateUrl: './live-update-cell.component.html',
   styleUrls: ['./live-update-cell.component.scss'],
   animations: [
-    trigger('fade', [
-      transition(':enter', [
-        animate(1000, style({ 'background-color': 'rgbqa(255,255,255,0)' }))
-      ]),
-      transition(':leave', [
-        animate(1000, style({ 'background-color': 'rgbqa(255,255,255,0)' }))
-      ])
+    trigger('openClose', [
+      state(
+        'positive',
+        style({ backgroundColor: '{{colorUp}}' }),
+        { params: { colorUp: '#cfc' } }
+      ),
+      state(
+        'negative',
+        style({ backgroundColor: '{{colorDown}}' }),
+        { params: { colorDown: '#fcc' } }
+      ),
+      state(
+        'equal',
+        style({ backgroundColor: '{{colorEqual}}' }),
+        { params: { colorEqual: 'transparent' } }
+      ),
+      transition('* => *', [animate('300ms')]),
     ])
   ]
 })
